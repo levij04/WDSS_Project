@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+    padding: 0;
+
+}
+
+#Holder {
+    width: 900px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 21px;
+    margin-bottom: 21px;
+
+}
+
+#Header {
+    height: 70px;
+    background-image: url("../assets/books-header.jpg");
+    backgrond-repeat: no repeat;
+    margin-bottom: 11px;
+}
+
+#NavBar {
+    height: 60px;
+    background-color: rgb(13, 13, 13);
+}
+
+#Content {
+    height: 600px;
+}
+
+#PageHeading {
+    height: auto;
+    padding: 11px;
+}
+
+#ContentLeft {
+    width: 280px;
+    float: left;
+}
+
+#ContentRight {
+    width: 680px;
+    float: right;
+}
+
+#Footer {
+    height: 100px;
+}
+
+h1 {
+    margin: 0;
+    font-family: Arial, Helveica, sans-seirf;
+    color: #666;
+    font-weight: lighter;
+}

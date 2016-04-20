@@ -1,0 +1,73 @@
+{% extends '_base.html.twig' %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+<div id="Content">
+
+    {% if message %}
+        <h2>{{ message }}</h2>
+    {% endif %}
+
+    <form action="index.php?action=processRegistration" method="post">
+        <fieldset>
+            <legend>Create a new account</legend>
+            <table>
+                <tr>
+                    <td>Username</td>
+                </tr>
+                <tr>
+                    <td><input type="text" name="username" size="20" required placeholder="Enter user name" autofocus>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>First Name</td>
+                </tr>
+                <tr>
+                    <td><input type="text" name="firstName" size="20" required placeholder="Enter first name"
+                               autofocus></td>
+                </tr>
+
+                <tr>
+                    <td>Last Name</td>
+                </tr>
+                <tr>
+                    <td><input type="text" name="lastName" size="20" required placeholder="Enter Last name"
+                               autofocus></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                </tr>
+                <tr>
+                    <td><input type="email" name="email" size="20" required placeholder="Enter Email" autofocus>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Password</td>
+                </tr>
+                <tr>
+                    <td><input name="password1" type="password" size="20" maxlength="10" pattern="{8}{10}" required
+                               placeholder="8-10 characters" autofocus></td>
+                </tr>
+                <tr>
+                    <td>Confirm Password</td>
+                </tr>
+
+                <tr>
+                    <td><input type="password" name="password2" size="20" maxlength="10" pattern="{8}{10}" required
+                               placeholder="Type your password again" autofocus></td>
+                </tr>
+                <tr>
+                    <td><input type="Submit" required value="Sign up" autofocus></td>
+                </tr>
+
+            </table>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
