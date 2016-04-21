@@ -143,7 +143,7 @@ class MainController
             return;
         }
 
-        $_SESSION['user'] = $user[0]->getUsername();
+        $_SESSION['user'] = serialize($user[0]);
         header("Location:index.php");
     }
 
@@ -170,17 +170,13 @@ class MainController
             echo $twig->render($template, $args);
             return;
         }
-        $currentUser = $_SESSION['user'];
+        $currentUser = unserialize($_SESSION['user']);
         if (!$book->getAvailable()) {
             $args['message'] = 'That book is not available';
             echo $twig->render($template, $args);
             return;
         }
-        if ($book->getAvailable()) {
-            $args['message'] = 'That book is available';
-            echo $twig->render($template, $args);
-            return;
-        }
+
 
         $book->setAvailable(0);
         $result = Book::update($book);
@@ -206,7 +202,7 @@ class MainController
 
     public function profileAction($twig)
     {
-        return print_r($_SESSION);
+        //return print_r($_SESSION);
         $args = array();
         $template = 'profile.html.twig';
         if (isset($_SESSION['user'])) {
@@ -214,11 +210,13 @@ class MainController
         }
 
         if (isset($_SESSION['user'])) {
-            $currentUsername = $_SESSION['user'];
-            $user = User::searchByColumn('username', $currentUsername)[0];
+            //$currentUsername = $_SESSION['user'];
+            //$user = User::searchByColumn('username', $currentUsername)[0];
+            $user = unserialize($_SESSION['user']);
             $username = $user->getUsername();
             $userPassword = $user->getPassword();
-            $userBooks = BorrowedBook::searchByColumn('userID', $user->getId());
+
+            $userBooks = BorrowedBook::searchByColumn('userId', $user->getUserID());
             $books = [];
             foreach ($userBooks as $ub) {
                 $b = Book::getOneById($ub->getBookID());
@@ -228,6 +226,7 @@ class MainController
             $args['username'] = $username;
             $args['password'] = $userPassword;
             $args['books'] = $books;
+
 
             echo $twig->render($template, $args);
             return;

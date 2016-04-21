@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block main %}
-<h1>fkkfk</h1>
-
-
+    <p>Your username: {{ username }} </p>
+    <p>Your password: {{ password }}
+    </p> <p>Your books: </p>
+    {% for book in books %}
+    <p> {{ book }} </p> {% endfor %}
 
 
 {% endblock %}
