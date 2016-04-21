@@ -6,9 +6,11 @@
 
 {% block main %}
     <h1>This is Login page.</h1>
-
+    {% if message %}
+        <h3>{{ message }}</h3>
+    {% endif %}
     <body>
-    <form action = "" method = "post">
+    <form action = "index.php?action=processLogin" method = "post">
         <label>UserName  :</label><input type = "text" name = "username" class = "box"/><br /><br />
         <label>Password  :</label><input type = "password" name = "password" class = "box" /><br/><br />
         <input type = "submit" value = " Submit "/><br />

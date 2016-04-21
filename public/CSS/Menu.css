@@ -31,3 +31,10 @@ nav ul li:hover a {
     display: black;
     color: black;
 }
+
+nav li {
+    display: black;
+    color: white;
+}
+
+

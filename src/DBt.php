@@ -26,15 +26,15 @@ class DBt {
             }
         }
         for($j=0; $j < count($values); $j++) {
-            if($j !== count($values) - 1) {
-                $sql .= '\'' . $values[$j] . '\', ';
-            } else {
-                $sql .= $values[$j];
-                $sql .= ');';
-            }
+                if($j !== count($values) - 1) {
+                    $sql .= '\'' . $values[$j] . '\', ';
+                } else {
+                    $sql .= $values[$j];
+                    $sql .= ');';
+                }
         }
 
-        return $sql;
+        // return $sql;
 
         $statement = $handle->prepare($sql);
         $statement->setFetchMode(\PDO::FETCH_ASSOC);

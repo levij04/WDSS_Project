@@ -6,6 +6,16 @@
 
 {% block main %}
     <h1>This is where to go if you forgot your password</h1>
+    if(isset($_SESSION['user'])) {
+    $user = $_SESSION['user'];
+    $username = $user->getUsername();
+    $userPassword = $user->getPassword();
+    $userBooks = BorrowedBook::searchByColumn('userID', $user->getId());
+    $books = [];
+    for($userBooks as $ub) {
+    $b = Book::getOneById($ub->getBookID());
+    $books[] = $b->getBookName();
+    }
 
 
 {% endblock %}

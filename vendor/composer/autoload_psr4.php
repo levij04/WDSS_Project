@@ -6,5 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Mattsmithdev\\PdoCrud\\' => array($vendorDir . '/mattsmithdev/pdo-crud-for-free/src'),
     'Library\\' => array($baseDir . '/src'),
 );

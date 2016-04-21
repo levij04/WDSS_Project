@@ -8,13 +8,20 @@
 
 namespace Library;
 
+use Library\User;
+use Library\BorrowedBook;
+use Library\Book;
 
 class MainController
 {
     public function homepageAction($twig)
     {
+
         $args = array();
         $template = 'index.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
         echo $twig->render($template, $args);
     }
 
@@ -22,6 +29,9 @@ class MainController
     {
         $args = array();
         $template = 'register.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
         echo $twig->render($template, $args);
     }
 
@@ -29,6 +39,9 @@ class MainController
     {
         $args = array();
         $template = 'login.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
         echo $twig->render($template, $args);
     }
 
@@ -36,24 +49,43 @@ class MainController
     {
         $args = array();
         $template = 'borrow.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
+
+        $books = Book::getAll();
+        $args ["books"] = $books;
+
         echo $twig->render($template, $args);
     }
+
     public function returnAction($twig)
     {
         $args = array();
         $template = 'return.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
         echo $twig->render($template, $args);
     }
+
     public function forgotAction($twig)
     {
         $args = array();
         $template = 'forgot.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
         echo $twig->render($template, $args);
     }
+
     public function processRegistrationAction($twig)
     {
         $args = array();
         $template = 'register.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
 
         $username = filter_input(INPUT_POST, "username");
         $firstName = filter_input(INPUT_POST, "firstName");
@@ -62,29 +94,146 @@ class MainController
         $password1 = filter_input(INPUT_POST, "password1");
         $password2 = filter_input(INPUT_POST, "password2");
 
-        if(strcmp($password1, $password2) < 0) {
+        if (strcmp($password1, $password2) < 0) {
             $args['message'] = 'passwords don\'t match';
             echo $twig->render($template, $args);
             return;
         }
 
-        $db = new DBt();
-        $table = 'user';
-        $columns = array('Fname', 'Lname', 'Email', 'Username', 'Password', 'Timestamp');
-        $values = array($firstName, $lastName, $email, $username, $password1, time());
-        $result = $db->insert($table, $columns, $values);
+        $hashedPass = password_hash($password1, PASSWORD_DEFAULT);
 
+        $User = new User();
+        $User->setUsername($username);
+        $User->setEmail($email);
+        $User->setPassword($hashedPass);
+        $User->setFname($firstName);
+        $User->setLname($lastName);
 
-
-        if($result) {
-            $args['message'] = 'success';
-        } else {
+        $result = User::insert($User);
+        if (!$result) {
             $args['message'] = 'failure';
+        } else {
+            $args['message'] = 'success';
         }
-
-
 
         echo $twig->render($template, $args);
     }
 
+    public function Login($twig)
+    {
+
+        $args = [];
+        $template = "login.html.twig";
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
+        $Username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+        $Password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
+
+        $user = User::searchByColumn("username", $Username);
+        if (!$user) {
+            $args["message"] = "user not found";
+            print $twig->render($template, $args);
+            return;
+        }
+        $userPassword = $user[0]->getPassword();
+        if (!password_verify($Password, $userPassword)) {
+            $args["message"] = "incorrect password";
+            print $twig->render($template, $args);
+            return;
+        }
+
+        $_SESSION['user'] = $user[0]->getUsername();
+        header("Location:index.php");
+    }
+
+    public function Logout($twig)
+    {
+        session_destroy();
+        header("Location:index.php");
+
+    }
+
+    public function TakeBook($twig)
+    {
+        $args = array();
+        $template = 'index.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
+
+        $bookId = filter_input(INPUT_POST, 'bookId', FILTER_SANITIZE_NUMBER_INT);
+        $book = Book::getOneById($bookId);
+
+        if (!isset($_SESSION['user'])) {
+            $args['message'] = 'You must log in before you can borrow books';
+            echo $twig->render($template, $args);
+            return;
+        }
+        $currentUser = $_SESSION['user'];
+        if (!$book->getAvailable()) {
+            $args['message'] = 'That book is not available';
+            echo $twig->render($template, $args);
+            return;
+        }
+        if ($book->getAvailable()) {
+            $args['message'] = 'That book is available';
+            echo $twig->render($template, $args);
+            return;
+        }
+
+        $book->setAvailable(0);
+        $result = Book::update($book);
+        if (!$result) {
+            $args['message'] = 'failed';
+        }
+
+
+        $borrowedBook = new BorrowedBook();
+        $borrowedBook->setBookId($bookId);
+        $borrowedBook->setUserId($currentUser->getUserID());
+        $result = BorrowedBook::insert($borrowedBook);
+
+        if (!$result) {
+            $args['message'] = 'failed';
+        } else {
+            $args['message'] = 'success';
+        }
+
+        echo $twig->render($template, $args);
+        return;
+    }
+
+    public function profileAction($twig)
+    {
+        return print_r($_SESSION);
+        $args = array();
+        $template = 'profile.html.twig';
+        if (isset($_SESSION['user'])) {
+            $args['user'] = $_SESSION['user'];
+        }
+
+        if (isset($_SESSION['user'])) {
+            $currentUsername = $_SESSION['user'];
+            $user = User::searchByColumn('username', $currentUsername)[0];
+            $username = $user->getUsername();
+            $userPassword = $user->getPassword();
+            $userBooks = BorrowedBook::searchByColumn('userID', $user->getId());
+            $books = [];
+            foreach ($userBooks as $ub) {
+                $b = Book::getOneById($ub->getBookID());
+                $books[] = $b->getBookName();
+            }
+
+            $args['username'] = $username;
+            $args['password'] = $userPassword;
+            $args['books'] = $books;
+
+            echo $twig->render($template, $args);
+            return;
+
+        }
+
+
+    }
 }

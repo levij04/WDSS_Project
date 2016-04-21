@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../app/setup.php';
+session_start();
 
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 
@@ -24,6 +25,18 @@ switch ($action) {
         break;
     case 'processRegistration':
         $mainController->processRegistrationAction($twig);
+        break;
+    case 'processLogin':
+        $mainController->Login($twig);
+        break;
+    case 'Logout';
+        $mainController->Logout($twig);
+        break;
+    case 'takebook';
+        $mainController->TakeBook($twig);
+        break;
+    case 'profile';
+        $mainController->profileAction($twig);
         break;
 
     default:
