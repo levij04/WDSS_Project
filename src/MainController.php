@@ -132,7 +132,7 @@ class MainController
 
         $user = User::searchByColumn("username", $Username);
         if (!$user) {
-            $args["message"] = "user not found";
+            $args["message"] = "User not found";
             print $twig->render($template, $args);
             return;
         }
@@ -172,7 +172,7 @@ class MainController
         }
         $currentUser = unserialize($_SESSION['user']);
         if (!$book->getAvailable()) {
-            $args['message'] = 'That book is not available';
+            $args['message'] = 'This book has been taken, please try again later';
             echo $twig->render($template, $args);
             return;
         }
@@ -193,7 +193,7 @@ class MainController
         if (!$result) {
             $args['message'] = 'failed';
         } else {
-            $args['message'] = 'success';
+            $args['message'] = 'Your have successfully taken out the book, please collect from the library';
         }
 
         echo $twig->render($template, $args);

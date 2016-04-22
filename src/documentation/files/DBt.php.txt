@@ -1,0 +1,60 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: College
+ * Date: 07/04/2016
+ * Time: 14:07
+ */
+
+namespace Library;
+
+
+class DBt {
+
+    public function insert ($table, $columns, $values)
+    {
+        $db = new DatabaseManager();
+        $handle = $db->getDbh();
+        $sql = 'insert into ' . $table . '(';
+        for ($i = 0; $i < count($columns); $i++) {
+            if ($i !== count($columns) - 1 ){
+                $sql .= $columns[$i]. ' , ';
+
+            }else {
+                $sql.=$columns[$i];
+                $sql.=') VALUES (';
+            }
+        }
+        for($j=0; $j < count($values); $j++) {
+                if($j !== count($values) - 1) {
+                    $sql .= '\'' . $values[$j] . '\', ';
+                } else {
+                    $sql .= $values[$j];
+                    $sql .= ');';
+                }
+        }
+
+        // return $sql;
+
+        $statement = $handle->prepare($sql);
+        $statement->setFetchMode(\PDO::FETCH_ASSOC);
+        $statement->execute();
+        return $statement->fetchAll();
+    }
+
+//    $db = new DBt();
+//    $table = 'user';
+//    $columns = array('Fname', 'Lname', 'Email', 'Username', 'Password', 'Timestamp');
+//    $values = array('Julek', 'Karski', 'B00079172@student.itb.ie', 'username', 'myPassword', time());
+//    $result = $db->insert($table, $columns, $values);
+//    if($result)
+//    {
+//        echo 'success';
+//    }
+//    else
+//    {
+//        echo 'failed';
+//    }
+
+
+} 
