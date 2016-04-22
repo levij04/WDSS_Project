@@ -14,6 +14,9 @@ use Mattsmithdev\PdoCrud\DatabaseTable;
 class Book extends DatabaseTable {
     private $ID;
     private $BookName;
+    private $Author;
+    private $Available;
+
 
     /**
      * @return mixed
@@ -78,8 +81,8 @@ class Book extends DatabaseTable {
     {
         $this->ID = $ID;
     }
-    private $Author;
-    private $Available;
+
+
 
 
 } 
